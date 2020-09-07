@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "九九乘法表2";
+}
+@model HelloMVC.Models.UserModel
+<style>
+
+    th, td {
+        padding: 15px;
+    }
+</style>
+
+<div class="text-center">
+    <table>
+        @for (int i = 1; i <= (int)ViewData["nem"]; i++)
+        {
+            <tr>
+                @for (int j = 1; j <= (int)ViewData["nem"]; j++)
+                {
+                    <td>@i * @j = @(i*j)</td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+

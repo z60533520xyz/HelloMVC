@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="text-center">
+    <h1>Sean Project</h1>
+    <h1>Welcom @ViewData["name"]</h1>
+
+    <p><a href="Sean/ninenine">ninenine</a></p>
+    <form method="get" action="/Sean/lotto">
+        <p>
+            <a href="Sean/lotto">lotto</a>
+            <input id="num" type="text" name="num" />
+        </p>
+    </form>
+    <form method="post" action="/Sean/ninenine2">
+        <p>
+            <a href="Sean/ninenine2">get nem參數 99乘法表</a>
+            <input id="nem2" type="text" name="nem2" />
+        </p>
+    </form>
+</div>

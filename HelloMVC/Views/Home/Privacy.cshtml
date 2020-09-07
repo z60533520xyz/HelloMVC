@@ -1,0 +1,15 @@
+﻿@using HelloMVC.Models;
+@{ 
+    List<Userdata> Userdata = ViewBag.Userdatas;
+}
+@{ 
+    foreach(Userdata Userdatas in Userdata)
+    {
+    <div>
+        <span>@Userdatas.name</span>
+        <span>@Userdatas.password</span>
+        <span>@Userdatas.username</span>
+
+    </div>
+    }
+}
