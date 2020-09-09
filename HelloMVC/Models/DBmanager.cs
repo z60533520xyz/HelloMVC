@@ -34,9 +34,11 @@ namespace HelloMVC.Models
                         name = reader.GetString(reader.GetOrdinal("name")),
                         sex = reader.GetBoolean(reader.GetOrdinal("sex")),
                         address = reader.GetString(reader.GetOrdinal("address")),
-                        brith = reader.GetDateTime(reader.GetOrdinal("brith")).ToString(),
+                        brith = reader.GetDateTime(reader.GetOrdinal("bith")).ToString(),
                         email = reader.GetString(reader.GetOrdinal("email")),
+                        image = reader.GetString(reader.GetOrdinal("image")),
                         date = reader.GetDateTime(reader.GetOrdinal("date")).ToString(),
+                        logindate = reader.GetDateTime(reader.GetOrdinal("date")).ToString(),
 
                     };
                     userdatas.Add(card);
@@ -49,11 +51,49 @@ namespace HelloMVC.Models
             sqlConnection.Close();
             return userdatas;
         }
-        public List<Conversation> GetConversations()
+        public List<Userdata> GetUserdatas(string username)
+        {
+            List<Userdata> userdatas = new List<Userdata>();
+            SqlConnection sqlConnection = new SqlConnection(ConnStr);
+            SqlCommand sqlCommand = new SqlCommand("SELECT * FROM userdata WHERE username='"+ username + "'");
+            sqlCommand.Connection = sqlConnection;
+            sqlConnection.Open();
+
+            SqlDataReader reader = sqlCommand.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    Userdata card = new Userdata
+                    {
+                        id = reader.GetInt32(reader.GetOrdinal("id")),
+                        username = reader.GetString(reader.GetOrdinal("username")),
+                        password = reader.GetString(reader.GetOrdinal("password")),
+                        name = reader.GetString(reader.GetOrdinal("name")),
+                        sex = reader.GetBoolean(reader.GetOrdinal("sex")),
+                        address = reader.GetString(reader.GetOrdinal("address")),
+                        brith = reader.GetDateTime(reader.GetOrdinal("bith")).ToString(),
+                        email = reader.GetString(reader.GetOrdinal("email")),
+                        image = reader.GetString(reader.GetOrdinal("image")),
+                        date = reader.GetDateTime(reader.GetOrdinal("date")).ToString(),
+                        logindate = reader.GetDateTime(reader.GetOrdinal("date")).ToString(),
+
+                    };
+                    userdatas.Add(card);
+                }
+            }
+            else
+            {
+                Console.WriteLine("資料庫為空！");
+            }
+            sqlConnection.Close();
+            return userdatas;
+        }
+        public List<Conversation> GetConversations(string username,string sationname)
         {
             List<Conversation> conversations = new List<Conversation>();
             SqlConnection sqlConnection = new SqlConnection(ConnStr);
-            SqlCommand sqlCommand = new SqlCommand("SELECT * FROM (SELECT TOP 10 * FROM Conversation WHERE (username IN('mary','sean') AND sationname IN('mary','sean')) ORDER BY id DESC) a ORDER BY id");
+            SqlCommand sqlCommand = new SqlCommand("SELECT * FROM (SELECT TOP 10 * FROM Conversation WHERE (username IN('"+ sationname + "','"+ username + "') AND sationname IN('"+ sationname + "','"+ username + "')) ORDER BY id DESC) a ORDER BY id");
             sqlCommand.Connection = sqlConnection;
             sqlConnection.Open();
 
@@ -129,7 +169,7 @@ namespace HelloMVC.Models
         {
             List<Target> targets = new List<Target>();
             SqlConnection sqlConnection = new SqlConnection(ConnStr);
-            SqlCommand sqlCommand = new SqlCommand($"SELECT friend FROM table WHERE username='" + username + "'", sqlConnection);
+            SqlCommand sqlCommand = new SqlCommand($"SELECT friends FROM tablelike WHERE username='" + username + "'", sqlConnection);
             sqlCommand.Connection = sqlConnection;
             sqlConnection.Open();
             SqlDataReader reader = sqlCommand.ExecuteReader();
@@ -139,7 +179,7 @@ namespace HelloMVC.Models
                 {
                     Target card = new Target
                     {
-                        target = reader.GetString(reader.GetOrdinal("username")).Split(","),
+                        target = reader.GetString(reader.GetOrdinal("friends")).Split(","),
                     };
                     targets.Add(card);
                 }
@@ -152,7 +192,80 @@ namespace HelloMVC.Models
             return targets;
         }
 
+        public List<Like> GetLike(string username)
+        {
+            List<Like> likes = new List<Like>();
+            SqlConnection sqlConnection = new SqlConnection(ConnStr);
+            SqlCommand sqlCommand = new SqlCommand($"SELECT * FROM tablelike WHERE username='" + username + "'", sqlConnection);
+            sqlCommand.Connection = sqlConnection;
+            sqlConnection.Open();
+            SqlDataReader reader = sqlCommand.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    Like like = new Like
+                    {
+                        tolikes = reader.GetString(reader.GetOrdinal("tolikes")),
+                        forlikes = reader.GetString(reader.GetOrdinal("forlikes")),
+                        unlikes = reader.GetString(reader.GetOrdinal("unlikes")),
+                        friends = reader.GetString(reader.GetOrdinal("friends")),
 
+                    };
+                    likes.Add(like);
+                }
+            }
+            else
+            {
+                Console.WriteLine("資料庫為空！");
+            }
+            sqlConnection.Close();
+            return likes;
+        }
+
+        public void SetTolike(string username,string tolike)
+        {
+            SqlConnection sqlConnection = new SqlConnection(ConnStr);
+            SqlCommand sqlCommand = new SqlCommand($"UPDATE tablelike SET tolikes=@tolike WHERE username = '" + username + "'", sqlConnection);
+            sqlCommand.Parameters.Add("@tolike", SqlDbType.NVarChar);
+            sqlCommand.Parameters["@tolike"].Value = tolike;
+            sqlConnection.Open();
+            _ = sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+        }
+
+        public void Setforlike(string username, string forlike)
+        {
+            SqlConnection sqlConnection = new SqlConnection(ConnStr);
+            SqlCommand sqlCommand = new SqlCommand($"UPDATE tablelike SET forlikes @folike WHERE username = '" + username + "'", sqlConnection);
+            sqlCommand.Parameters.Add("@forlike", SqlDbType.NVarChar);
+            sqlCommand.Parameters["@forlike"].Value = forlike;
+            sqlConnection.Open();
+            _ = sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+        }
+
+        public void Setunlike(string username, string unlike)
+        {
+            SqlConnection sqlConnection = new SqlConnection(ConnStr);
+            SqlCommand sqlCommand = new SqlCommand($"UPDATE tablelike SET folikes @Setunlike WHERE username = '" + username + "'", sqlConnection);
+            sqlCommand.Parameters.Add("@Setunlike", SqlDbType.NVarChar);
+            sqlCommand.Parameters["@Setunlike"].Value = unlike;
+            sqlConnection.Open();
+            _ = sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+        }
+
+        public void Setfriend(string username, string friend)
+        {
+            SqlConnection sqlConnection = new SqlConnection(ConnStr);
+            SqlCommand sqlCommand = new SqlCommand($"UPDATE tablelike SET folikes @friend WHERE username = '" + username + "'", sqlConnection);
+            sqlCommand.Parameters.Add("@friend", SqlDbType.NVarChar);
+            sqlCommand.Parameters["@friend"].Value = friend;
+            sqlConnection.Open();
+            _ = sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+        }
 
     }   
 }

@@ -1,0 +1,57 @@
+﻿@using HelloMVC.Models;
+@{ 
+    List<Conversation> conversation = ViewBag.conversations;
+    string[] target = ViewBag.target;
+}
+<body onload="document.getElementById('inputTxt').focus()">
+    <div id="view-div" style="        width: 800px;
+        height: 500px;
+        overflow: auto;
+        float: left;
+">
+        @foreach (Conversation conversations in conversation)
+        {
+            <div>
+                @{
+                    if (conversations.username == ViewData["username"].ToString())
+                    {
+                        <div style="text-align: right">
+                            <h3 style="text-align: right;width:100%"> @ViewData["username"] </h3>
+                            <h2 style="text-align: right;width:100%"> @conversations.text </h2>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <h3 style="text-align: left;width: 80%"> @ViewData["sationname"] </h3>
+                            <h2 style="text-align: left;width: 80%"> @conversations.text </h2>
+                        </div>
+                    }
+                }
+            </div>
+        }
+    </div>
+    <script>
+        var objDiv = document.getElementById("view-div");
+        objDiv.scrollTop = objDiv.scrollHeight;
+
+    </script>
+    <div style="float: right;width:200px;height:500px; border-style:groove;border-radius:10px;">
+        @foreach (string s in target)
+        {
+            string s1 = s + ".ico'";
+            <form action="/Home/Conversation">
+                <input value=@s name=sationname type="submit" style="width: 195px;
+            background: #ccc url('/images/icons/@s1  ) no-repeat top left;
+            padding-left: 48px;
+            height: 48px;">
+            </form>
+        }
+    </div>
+    <div>
+        <form method="post" action="/Home/SendMag?sationname=@ViewData["sationname"] ">
+            <input id="inputTxt" style="border-style:groove;border-radius:10px; width:800px;" name="send" type="text" />
+        </form>
+    </div>
+    <meta http-equiv="refresh" content="30" />
+</body>

@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div>
+    <div style="width:800px">
+        <div style="float:left;width:50%">
+            <img src="~/images/user/@ViewBag.image " alt="@ViewBag.username " />
+        </div>
+        <div style="float:right;width:50%">
+            <h3>@ViewBag.name </h3>
+            <h3>@ViewBag.sex </h3>
+            <h3>@ViewBag.address </h3>
+            <h3>@ViewBag.logindate </h3>
+        </div>
+    </div>
+    <div>
+        @{string s1 = $"/Home/test/?username=" + @ViewBag.username +"&likename=" + ViewBag.likename + "&like=True";}
+        @{string s2 = $"/Home/test/?username=" + @ViewBag.username +"&likename=" + ViewBag.likename + "&like=False";}
+
+        <a href="@s2"><img src="~/images/like4.png" alt="unlike" /></a>
+        <a href="@s1"><img src="~/images/like3.png" alt="like" /></a>
+    </div>
+</div>

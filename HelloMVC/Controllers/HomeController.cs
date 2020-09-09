@@ -34,15 +34,22 @@ namespace HelloMVC.Controllers
             return View();
         }
 
-        public IActionResult Privacy2()
+        public IActionResult Conversation(string sationname="admin")
         {
-            if (HttpContext.Session.GetString("username") != null ){ 
+            if (HttpContext.Session.GetString("username") != null ){
+                string username = HttpContext.Session.GetString("username");
                 DBmanager dBmanager = new DBmanager();
-                List<Conversation> conversations = dBmanager.GetConversations();
+                List<Conversation> conversations = dBmanager.GetConversations(username, sationname);
                 ViewBag.conversations = conversations;
-                ViewData["username"] = HttpContext.Session.GetString("username");
-                ViewData["sationname"] = "mary";
-                HttpContext.Session.SetString("sationname", "mary");
+                ViewData["username"] = username;
+                List<Target> targets = dBmanager.GetTargets(ViewData["username"].ToString());
+                foreach (Target target in targets)
+                {
+                    ViewBag.target = target.target;
+                }
+                ViewData["sationname"] = sationname;
+                HttpContext.Session.SetString("sationname", sationname);
+
                 return View();
             }
             else
@@ -51,13 +58,13 @@ namespace HelloMVC.Controllers
             }
             
         }
-        public IActionResult SendMag(string send = "")
+        public IActionResult SendMag(string send = "",string sationname = "")
         {
             if(send != "") {
                 DBmanager dBmanager = new DBmanager();
                 dBmanager.SendMag(HttpContext.Session.GetString("username"), HttpContext.Session.GetString("sationname"), send);
             }
-            return RedirectToAction("Privacy2", "Home");
+            return RedirectToAction("Conversation", "Home",new { sationname = sationname });
 
 
         }
@@ -85,7 +92,7 @@ namespace HelloMVC.Controllers
                 {
                     ViewData["masg"] = "";
                     HttpContext.Session.SetString("username", name);
-                    return RedirectToAction("Privacy2", "Home");
+                    return RedirectToAction("Conversation", "Home");
                 }
                 else
                 {
@@ -96,6 +103,62 @@ namespace HelloMVC.Controllers
         }
         public IActionResult login2()
         {
+            return View();
+        }
+        public IActionResult Like(string likename = "admin")
+        {
+            DBmanager dBmanager = new DBmanager();
+            List<Userdata> userdatas = dBmanager.GetUserdatas(likename);
+            ViewBag.username = HttpContext.Session.GetString("username");
+            foreach(Userdata userdata in userdatas)
+            {
+                ViewBag.likename = userdata.username;
+                ViewBag.name = userdata.name;
+                ViewBag.sex = userdata.sex;
+                ViewBag.address = userdata.address;
+                ViewBag.image = userdata.image;
+                ViewBag.logindate = userdata.logindate;
+            }
+
+            return View();
+        }
+
+        public IActionResult signup()
+        {
+            return View();
+        }
+        public IActionResult test(string username = "",string likename = "",bool like = false)
+        {
+            string newlike;
+            string oldlike = "";
+            if(username=="" | likename == "")
+            {
+                return View();
+            }
+            else
+            {
+                DBmanager dBmanager = new DBmanager();
+                if (like)
+                {
+                    bool likeck = true; 
+                    List<Like> likes = dBmanager.GetLike(username);
+                    foreach(Like l in likes)
+                    {
+                        oldlike = l.tolikes;
+                        foreach(string s in l.tolikes.Split(","))
+                        {
+                            if (likename == s) likeck = false;
+                        }
+                    }
+                    if (likeck)
+                    {
+                        newlike = oldlike + "," + likename;
+                        dBmanager.SetTolike(username, newlike);
+
+                    }
+                }
+
+            }
             return View();
         }
 

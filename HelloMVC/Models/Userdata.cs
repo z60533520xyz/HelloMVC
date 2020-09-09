@@ -15,6 +15,8 @@ namespace HelloMVC.Models
         public string date { get; set; }
         public bool sex { get; set; }
         public string address { get; set; }
+        public string image { get; set; }
         public string brith { get; set; }
+        public string logindate { get; set; }
     }
 }
